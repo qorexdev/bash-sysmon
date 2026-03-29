@@ -19,7 +19,8 @@ _notify() {
 backup_dir() {
     local src="$1"
     local name="${2:-$(basename "$src")}"
-    local dst="${BACKUP_DIR}/${name}_$(_ts)"
+    local dst
+    dst="${BACKUP_DIR}/${name}_$(_ts)"
     mkdir -p "$BACKUP_DIR"
 
     _log "Backing up directory: $src"
@@ -39,7 +40,8 @@ backup_dir() {
 backup_postgres() {
     local db="$1"
     local user="${PGUSER:-postgres}"
-    local dst="${BACKUP_DIR}/pg_${db}_$(_ts).sql"
+    local dst
+    dst="${BACKUP_DIR}/pg_${db}_$(_ts).sql"
     mkdir -p "$BACKUP_DIR"
 
     _log "Dumping PostgreSQL database: $db"
@@ -59,7 +61,8 @@ backup_postgres() {
 backup_mysql() {
     local db="$1"
     local user="${MYSQL_USER:-root}"
-    local dst="${BACKUP_DIR}/mysql_${db}_$(_ts).sql"
+    local dst
+    dst="${BACKUP_DIR}/mysql_${db}_$(_ts).sql"
     mkdir -p "$BACKUP_DIR"
 
     _log "Dumping MySQL database: $db"

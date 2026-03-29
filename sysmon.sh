@@ -203,7 +203,10 @@ cmd_help() {
     echo "  echo '*/5 * * * * /path/to/sysmon.sh check' | crontab -"
 }
 
-[[ -f "$CONFIG_FILE" ]] && source "$CONFIG_FILE" 2>/dev/null || true
+# shellcheck source=/dev/null
+if [[ -f "$CONFIG_FILE" ]]; then
+    source "$CONFIG_FILE" 2>/dev/null || true
+fi
 
 case "${1:-help}" in
     status)   cmd_status ;;
