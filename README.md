@@ -12,6 +12,7 @@ A collection of Bash scripts for Linux server monitoring, automated backups, and
 | `backup.sh` | Automated backups for directories and databases (PostgreSQL, MySQL) |
 | `disk-alert.sh` | Disk usage alerts per partition with configurable threshold and Telegram notifications |
 | `logrotate.sh` | Log rotation by size with gzip compression and age-based cleanup |
+| `netmon.sh` | Network latency and packet loss monitor with Telegram alerts |
 | `server-setup.sh` | Ubuntu server initial setup: UFW, fail2ban, deploy user, SSH hardening, Docker |
 
 ## Quick Start
@@ -137,6 +138,34 @@ LOG_DIR=/var/log/myapp ./logrotate.sh rotate
 0 2 * * * /path/to/logrotate.sh all
 ```
 
+## netmon.sh
+
+```bash
+# Check latency and packet loss for default targets (8.8.8.8, 1.1.1.1, google.com)
+./netmon.sh
+
+# 10 pings per target
+./netmon.sh -c 10
+
+# Custom targets and loss threshold
+./netmon.sh --targets "8.8.8.8 cloudflare.com" --loss 10
+
+# Set latency alert threshold (ms)
+./netmon.sh --latency 100
+```
+
+**Telegram alerts:**
+```bash
+export TELEGRAM_BOT_TOKEN="your_bot_token"
+export TELEGRAM_CHAT_ID="your_chat_id"
+./netmon.sh
+```
+
+**Cron (every 10 minutes):**
+```bash
+*/10 * * * * TELEGRAM_BOT_TOKEN=xxx TELEGRAM_CHAT_ID=yyy /path/to/netmon.sh
+```
+
 ## server-setup.sh
 
 ```bash
@@ -168,7 +197,7 @@ CHECK_INTERVAL=300
 
 - Linux (tested on Ubuntu 20.04/22.04/24.04, Debian 11/12, CentOS 7/8)
 - bash 4.0+
-- Standard utilities: `awk`, `sed`, `df`, `ps`, `ss`
+- Standard utilities: `awk`, `sed`, `df`, `ps`, `ss`, `ping`
 - `curl` — for Telegram alerts (optional)
 - `pg_dump` — for PostgreSQL backups (optional)
 - `mysqldump` — for MySQL backups (optional)
