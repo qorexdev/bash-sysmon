@@ -10,6 +10,7 @@ A collection of Bash scripts for Linux server monitoring, automated backups, and
 |:---|:---|
 | `sysmon.sh` | Real-time CPU/RAM/disk monitoring with Telegram alerts |
 | `backup.sh` | Automated backups for directories and databases (PostgreSQL, MySQL) |
+| `disk-alert.sh` | Disk usage alerts per partition with configurable threshold and Telegram notifications |
 | `server-setup.sh` | Ubuntu server initial setup: UFW, fail2ban, deploy user, SSH hardening, Docker |
 
 ## Quick Start
@@ -79,6 +80,30 @@ RETENTION_DAYS=7 ./backup.sh cleanup
 ```bash
 0 3 * * * BACKUP_DIR=/backups PGPASSWORD=pass /path/to/backup.sh postgres mydb
 0 4 * * * BACKUP_DIR=/backups /path/to/backup.sh cleanup
+```
+
+## disk-alert.sh
+
+```bash
+# Check all partitions (default threshold: 80%)
+./disk-alert.sh
+
+# Custom threshold
+./disk-alert.sh --threshold 90
+
+# Only check root partition
+./disk-alert.sh --mount /
+
+# Preview mode — shows what would alert without sending notifications
+./disk-alert.sh --dry-run
+
+# Combine options
+./disk-alert.sh --threshold 75 --mount /home --dry-run
+```
+
+**Hourly cron with Telegram:**
+```bash
+0 * * * * TELEGRAM_BOT_TOKEN=xxx TELEGRAM_CHAT_ID=yyy /path/to/disk-alert.sh --threshold 85
 ```
 
 ## server-setup.sh
