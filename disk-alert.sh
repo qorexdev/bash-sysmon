@@ -10,8 +10,6 @@ DRY_RUN=false
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
 GREEN='\033[0;32m'
-CYAN='\033[0;36m'
-BOLD='\033[1m'
 NC='\033[0m'
 
 _notify() {
@@ -44,7 +42,7 @@ _check_disk() {
     local hostname
     hostname=$(hostname)
 
-    while read -r usage avail mount; do
+    while read -r usage _avail mount; do
         [[ -z "$usage" ]] && continue
 
         if [[ -n "$MOUNT_FILTER" ]] && [[ "$mount" != "$MOUNT_FILTER" ]]; then
