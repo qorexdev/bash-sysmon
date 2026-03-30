@@ -11,6 +11,7 @@ A collection of Bash scripts for Linux server monitoring, automated backups, and
 | `sysmon.sh` | Real-time CPU/RAM/disk monitoring with Telegram alerts |
 | `backup.sh` | Automated backups for directories and databases (PostgreSQL, MySQL) |
 | `disk-alert.sh` | Disk usage alerts per partition with configurable threshold and Telegram notifications |
+| `logrotate.sh` | Log rotation by size with gzip compression and age-based cleanup |
 | `server-setup.sh` | Ubuntu server initial setup: UFW, fail2ban, deploy user, SSH hardening, Docker |
 
 ## Quick Start
@@ -104,6 +105,36 @@ RETENTION_DAYS=7 ./backup.sh cleanup
 **Hourly cron with Telegram:**
 ```bash
 0 * * * * TELEGRAM_BOT_TOKEN=xxx TELEGRAM_CHAT_ID=yyy /path/to/disk-alert.sh --threshold 85
+```
+
+## logrotate.sh
+
+```bash
+# Check current log sizes
+./logrotate.sh status
+
+# Rotate logs bigger than 10M (default)
+./logrotate.sh rotate
+
+# Remove rotated logs older than 30 days
+./logrotate.sh clean
+
+# Both rotate + clean in one go
+./logrotate.sh all
+
+# Preview what would happen without changing anything
+DRY_RUN=true ./logrotate.sh all
+
+# Custom size threshold and retention
+MAX_SIZE=5M MAX_FILES=3 ./logrotate.sh rotate
+
+# Use with any log directory
+LOG_DIR=/var/log/myapp ./logrotate.sh rotate
+```
+
+**Daily cron:**
+```bash
+0 2 * * * /path/to/logrotate.sh all
 ```
 
 ## server-setup.sh
