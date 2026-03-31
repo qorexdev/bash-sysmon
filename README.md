@@ -13,6 +13,7 @@ A collection of Bash scripts for Linux server monitoring, automated backups, and
 | `disk-alert.sh` | Disk usage alerts per partition with configurable threshold and Telegram notifications |
 | `logrotate.sh` | Log rotation by size with gzip compression and age-based cleanup |
 | `netmon.sh` | Network latency and packet loss monitor with Telegram alerts |
+| `healthcheck.sh` | HTTP endpoint health checker with response times and Telegram alerts |
 | `server-setup.sh` | Ubuntu server initial setup: UFW, fail2ban, deploy user, SSH hardening, Docker |
 
 ## Quick Start
@@ -164,6 +165,33 @@ export TELEGRAM_CHAT_ID="your_chat_id"
 **Cron (every 10 minutes):**
 ```bash
 */10 * * * * TELEGRAM_BOT_TOKEN=xxx TELEGRAM_CHAT_ID=yyy /path/to/netmon.sh
+```
+
+## healthcheck.sh
+
+Checks HTTP endpoints from a config file and reports status + response time. Exits with code 1 if any service is down.
+
+```bash
+# Check endpoints from config file
+./healthcheck.sh healthcheck.conf
+
+# Custom timeout (default: 5s)
+TIMEOUT=10 ./healthcheck.sh healthcheck.conf
+
+# With Telegram alerts
+TELEGRAM_BOT_TOKEN=xxx TELEGRAM_CHAT_ID=yyy ./healthcheck.sh healthcheck.conf
+```
+
+**Config file format** (`healthcheck.conf`):
+```
+# name            url                       [timeout]
+google            https://www.google.com
+my-api            https://api.example.com   10
+```
+
+**Cron (every 2 minutes):**
+```bash
+*/2 * * * * TELEGRAM_BOT_TOKEN=xxx TELEGRAM_CHAT_ID=yyy /path/to/healthcheck.sh /path/to/healthcheck.conf
 ```
 
 ## server-setup.sh
