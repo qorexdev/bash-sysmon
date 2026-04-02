@@ -14,6 +14,7 @@ A collection of Bash scripts for Linux server monitoring, automated backups, and
 | `logrotate.sh` | Log rotation by size with gzip compression and age-based cleanup |
 | `netmon.sh` | Network latency and packet loss monitor with Telegram alerts |
 | `healthcheck.sh` | HTTP endpoint health checker with response times and Telegram alerts |
+| `ssl-check.sh` | SSL certificate expiry checker with configurable warning threshold |
 | `server-setup.sh` | Ubuntu server initial setup: UFW, fail2ban, deploy user, SSH hardening, Docker |
 
 ## Quick Start
@@ -192,6 +193,27 @@ my-api            https://api.example.com   10
 **Cron (every 2 minutes):**
 ```bash
 */2 * * * * TELEGRAM_BOT_TOKEN=xxx TELEGRAM_CHAT_ID=yyy /path/to/healthcheck.sh /path/to/healthcheck.conf
+```
+
+## ssl-check.sh
+
+```bash
+# Check one or more domains
+./ssl-check.sh example.com google.com
+
+# Read domains from a file
+./ssl-check.sh --file domains.txt
+
+# Custom warning threshold (default: 30 days)
+./ssl-check.sh --warn-days 14 example.com
+
+# Preview without Telegram alerts
+./ssl-check.sh --dry-run example.com
+```
+
+**Daily cron:**
+```bash
+0 8 * * * TELEGRAM_BOT_TOKEN=xxx TELEGRAM_CHAT_ID=yyy /path/to/ssl-check.sh --file /path/to/domains.txt
 ```
 
 ## server-setup.sh
